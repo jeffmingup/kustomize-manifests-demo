@@ -1,0 +1,46 @@
+name: Update Dev Tag
+
+on:
+  repository_dispatch:
+    types:
+      - update-dev
+
+jobs:
+  update-dev-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 确认镜像标签参数
+        run: |
+          if [ -z "${{ github.event.client_payload.image_tag }}" ]; then
+            echo "未提供 image_tag，终止执行" >&2
+            exit 1
+          fi
+
+      - name: Update Kustomize image tag
+        uses: mikefarah/yq@v4.44.3
+        env:
+          IMAGE_TAG: ${{ github.event.client_payload.image_tag }}
+        with:
+          cmd: >-
+            yq -i '(.images[] | select(.name == "docker.io/1960588251/k8s-cicd-demo")).newTag = strenv(IMAGE_TAG)'
+            overlays/dev/kustomization.yaml
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update dev image tag to ${{ github.event.client_payload.image_tag }}'
+          branch: 'chore/update-dev-tag-${{ github.run_id }}' 
+          title: 'chore: update dev image tag to ${{ github.event.client_payload.image_tag }}'
+          body: |
+            自动更新 dev 环境镜像标签： `${{ github.event.client_payload.image_tag }}`。
+          labels: auto-update
+          base: main
+

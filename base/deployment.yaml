@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-cicd-demo
+  labels:
+    app: k8s-cicd-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-cicd-demo
+  template:
+    metadata:
+      labels:
+        app: k8s-cicd-demo
+    spec:
+      containers:
+        - name: server
+          image: docker.io/1960588251/k8s-cicd-demo:latest
+          ports:
+            - containerPort: 8080
+
