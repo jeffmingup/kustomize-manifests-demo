@@ -5,7 +5,7 @@ metadata:
   labels:
     app: k8s-cicd-demo
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: k8s-cicd-demo
   ports:
