@@ -13,3 +13,20 @@ spec:
       port: 80
       targetPort: 8080
 
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dev-k8s-cicd-demo-ingress
+  namespace: default
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /dev-k8s-cicd-demo
+            pathType: Prefix
+            backend:
+              service:
+                name: dev-k8s-cicd-demo
+                port:
+                  number: 80
