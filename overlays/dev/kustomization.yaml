@@ -5,4 +5,4 @@ resources:
   - ../../base
 images:
   - name: docker.io/1960588251/k8s-cicd-demo
-    newTag: sha-470be8d
+    newTag: sha-2808f62
